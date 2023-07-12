@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Local Government Results{% endblock %}
+{% block content %}
+<h1>Local Government Election Results</h1>
+
+<div>
+    <form id="lga_results_form" action="#">
+        <div class="row align-items-center">
+            <div class="col-md-3 p-1">
+                <input type="text" class="form-control" value="Delta" disabled />
+            </div>
+            <div class="col-md-3 p-1">
+                <select class="form-control" id="lga_result_select">
+                    <option value="">Select Lga</option>
+                    {% for lga in lgas %}
+                    <option value="{{ lga.uniqueid }}">{{ lga.lga_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </form>
+    <div class="col-auto">
+        <div class="mt-2 ">
+            <table class="table table-bordered  " id="lga-results-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Party</th>
+                        <th scope="col">Vote Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
