@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Local Government Results{% endblock %}
+{% set active_page = "lgas" %}
 {% block content %}
 <h1>Local Government Election Results</h1>
 
@@ -13,7 +14,7 @@
                 <select class="form-control" id="lga_result_select">
                     <option value="">Select Lga</option>
                     {% for lga in lgas %}
-                    <option value="{{ lga.uniqueid }}">{{ lga.lga_name }}</option>
+                    <option value="{{ lga.lga_id }}">{{ lga.lga_name }}</option>
                     {% endfor %}
                 </select>
             </div>

@@ -20,13 +20,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Polling Unit Results</a>
+                        <a class="nav-link {{ 'active' if active_page == '/' else '' }}" aria-current="page" href="/">Polling Unit Results</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/lgas">Local Goverment Results</a>
+                        <a class="nav-link {{ 'active' if active_page == 'lgas' else '' }}" href="/lgas">Local Goverment Results</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Add Votes</a>
+                        <a class="nav-link {{ 'active' if active_page == 'add' else '' }}" href="/add">Add Polling Unit Votes</a>
                     </li>
                    
                 </ul>

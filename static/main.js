@@ -2,6 +2,14 @@ $(document).ready(function () {
   function isObjEmpty(obj) {
     return JSON.stringify(obj) === "{}";
   }
+
+  $("#addRow").click(function () {
+    var tableBody = document.getElementById("results-body");
+    var newRow = document.createElement("tr");
+    newRow.innerHTML = `<td><input class="form-control" type="text" name="party" ></td><td><input type="number" class="form-control" value="0" name="votes" ></td>`;
+    tableBody.appendChild(newRow);
+  });
+
   const get_polling_units = (ward_id) => {
     $.ajax({
       url: "/pu/" + ward_id,

@@ -6,6 +6,7 @@ from typing import List
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
+from datetime import datetime
 
 # create the object of Flask
 app = Flask(__name__)
@@ -14,7 +15,7 @@ app.config['SECRET_KEY'] = 'BAmbooty291..'
 
 
 # SqlAlchemy Database Configuration With Mysql
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/bincom_test'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://sql8632439:g5ISZDB2Aw@sql8.freemysqlhosting.net/sql8632439'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
@@ -48,10 +49,15 @@ class Pu(db.Model):
     uniqueid = db.Column(db.Integer, primary_key=True)
     polling_unit_id = db.Column(db.Integer)
     polling_unit_name = db.Column(db.String(100))
+    lat = db.Column(db.String(100))
+    long = db.Column(db.String(100))
+    polling_unit_description = db.Column(db.String(100))
+    polling_unit_number = db.Column(db.String(100))
+    entered_by_user = db.Column(db.String(100))
     ward_id: Mapped[int] = mapped_column(ForeignKey("ward.ward_id"))
     ward: Mapped["Ward"] = relationship(
         back_populates="polling_units", lazy=True)
-    lga_id: Mapped[int] = mapped_column(ForeignKey("lga.lga_id"))
+    lga_id: Mapped[int] = mapped_column(ForeignKey("lga.uniqueid"))
     lga: Mapped["Lga"] = relationship(
         back_populates="polling_units", lazy=True)
     results: Mapped[List["Result"]] = db.relationship(
@@ -63,8 +69,10 @@ class Result(db.Model):
     result_id = db.Column(db.Integer, primary_key=True)
     party_score = db.Column(db.Integer)
     party_abbreviation = db.Column(db.String(100))
+    entered_by_user = db.Column(db.String(100))
+    date_entered = db.Column(db.DateTime())
     polling_unit_uniqueid: Mapped[int] = mapped_column(
-        ForeignKey("polling_unit.polling_unit_id"))
+        ForeignKey("polling_unit.uniqueid"))
     polling_unit: Mapped["Pu"] = relationship(
         back_populates="results", lazy=True)
 
@@ -82,6 +90,42 @@ def lga_results():
     return render_template('result.html', lgas=lgas)
 
 
+@app.route('/add', methods=['GET', 'POST'])
+def add_lga_results():
+    lgas = Lga.query.all()
+    if request.method == 'POST':
+        party_names = request.form.getlist('party')
+        vote_counts = request.form.getlist('votes')
+        polling_unit_name = request.form['polling_unit_name']
+        ward_id = request.form['ward_id']
+        lga_id = request.form['lga_id']
+        polling_unit_description = request.form['polling_unit_description']
+        polling_unit_number = request.form['polling_unit_number']
+        polling_unit_id = request.form['polling_unit_id']
+        long = request.form['long']
+        lat = request.form['lat']
+        entered_by_user = request.form['entered_by_user']
+        new_polling_unit = Pu(polling_unit_name=polling_unit_name, lat=lat, long=long, ward_id=ward_id, lga_id=lga_id,
+                              polling_unit_description=polling_unit_description, polling_unit_number=polling_unit_number, polling_unit_id=polling_unit_id, entered_by_user=entered_by_user)
+        try:
+            db.session.add(new_polling_unit)
+            db.session.flush()
+
+            for party, votes in zip(party_names, vote_counts):
+                result = Result(party_abbreviation=party, party_score=votes, entered_by_user=entered_by_user,
+                                polling_unit_uniqueid=new_polling_unit.uniqueid, date_entered=datetime.now())
+                db.session.add(result)
+
+            db.session.commit()
+
+            return render_template('save.html', lgas=lgas,status="success" , message='Vote results added successfully!')
+        except:
+            return render_template('save.html', lgas=lgas,status="danger", message='Error, Vote results not saved!')
+
+  
+    return render_template('save.html', lgas=lgas)
+
+
 @app.route('/wards/<lga_id>')
 def get_wards(lga_id):
     wards = Ward.query.filter_by(lga_id=lga_id).all()
@@ -90,11 +134,10 @@ def get_wards(lga_id):
     return jsonify(ward_list)
 
 
-
 @app.route('/pu/<ward_id>')
 def get_polling_units(ward_id):
     polling_units = Pu.query.filter_by(ward_id=ward_id).all()
-    pu_list = [{'id': pu.polling_unit_id, 'name': pu.polling_unit_name}
+    pu_list = [{'id': pu.uniqueid, 'name': pu.polling_unit_name}
                for pu in polling_units]
     return jsonify(pu_list)
 
@@ -107,10 +150,11 @@ def get_polling_units_results(pu_id):
     return jsonify(results_list)
 
 
-@app.route('/lga_results/<lga_id>')
-def get_lga_results(lga_id):
+@app.route('/lga_results/<id>')
+def get_lga_results(id):
     # Retrieve all results for the given local government
-    results = db.session.query(Result).join(Pu).join(Ward).join(Lga).filter(Lga.lga_id == lga_id).all()
+    results = db.session.query(Result).join(Pu).join(
+        Ward).join(Lga).filter(Lga.lga_id == id).all()
     party_votes = {}
     total_votes = 0
     for result in results:

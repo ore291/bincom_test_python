@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}Save Polling Unit Results{% endblock %}
+{% set active_page = "add" %}
+{% block content %}
+<h1 class="display">Create Polling Unit </h1>
+
+<div>
+    {% if message  %}
+    <div class="alert alert-{{status}}" role="alert">
+        {{ message }}
+      </div>
+    {% endif %}
+    <form id="save_results_form" action="/add" method="post">
+        <div class="row g-3">
+            <div class="col-md-4 p-1">
+                <select name="lga_id" required class="form-control" id="lga_select">
+                    <option value="">Select Lga</option>
+                    {% for lga in lgas %}
+                    <option value="{{ lga.lga_id }}">{{ lga.lga_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 p-1">
+                <select name="ward_id" required class="form-control" id="ward_select">
+                    <option value="">Select Ward</option>
+                </select>
+            </div>
+
+            <div class="col-md-4  p-1">
+                <div class="input-group">
+                    <span class="input-group-text" id="basic-addon1">Name</span>
+                    <input required type="text" name="polling_unit_name" class="form-control"
+                        placeholder="Polling Unit Name" aria-label="Polling Unit Name" aria-describedby="basic-addon1">
+                </div>
+
+            </div>
+
+        </div>
+        <div class="row g-3">
+            <div class="col-md-4  p-1">
+                <div class="input-group">
+                  
+                    <input required type="number" name="polling_unit_id" class="form-control"
+                        placeholder="Polling Unit ID" aria-label="Polling Unit ID" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-md-4 p-1">
+                <div class="input-group">
+                    <input type="text" name="polling_unit_number" class="form-control" placeholder="Polling Unit Number"
+                        aria-label="Polling Unit ID" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-md-4 p-1">
+                <div class="input-group">
+                    <input type="text" name="polling_unit_description" class="form-control" placeholder="Polling Unit Description"
+                        aria-label="Polling Unit Description" aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-4 p-1">
+                <div class="input-group">
+                    <input type="text" name="lat" class="form-control" placeholder="Latitude"
+                        aria-label="Latitude" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-md-4 p-1">
+                <div class="input-group">
+                    <input type="text" name="long" class="form-control" placeholder="Longitude"
+                        aria-label="Longitude" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-md-4 p-1">
+                <div class="input-group">
+                    <input type="text" name="entered_by_user" class="form-control" placeholder="Entered By"
+                        aria-label="Entered By" aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <table class="table table-bordered" id="results-table">
+                <thead>
+                    <tr>
+                        <th>Party</th>
+                        <th>Votes</th>
+                    </tr>
+                </thead>
+                <tbody id="results-body">
+                    <tr>
+                        <td><input value="ACN" class="form-control" type="text" name="party" required></td>
+                        <td><input class="form-control" value="0" type="number" name="votes" required></td>
+                    </tr>
+                    <tr>
+                        <td><input value="ANPP" class="form-control" type="text" name="party" required></td>
+                        <td><input class="form-control" value="0" type="number" name="votes" required></td>
+                    </tr>
+                    <tr>
+                        <td><input value="CDC" class="form-control" type="text" name="party" required></td>
+                        <td><input class="form-control" value="0" type="number" name="votes" required></td>
+                    </tr>
+                    <tr>
+                        <td><input value="CPP" class="form-control" type="text" name="party" required></td>
+                        <td><input class="form-control" value="0" type="number" name="votes" required></td>
+                    </tr>
+                    <tr>
+                        <td><input value="DPP" class="form-control" type="text" name="party" required></td>
+                        <td><input class="form-control" value="0" type="number" name="votes" required></td>
+                    </tr>
+                    <tr>
+                        <td><input value="JP" class="form-control" type="text" name="party" required></td>
+                        <td><input class="form-control" value="0" type="number" name="votes" required></td>
+                    </tr>
+                    <tr>
+                        <td><input value="LABO" class="form-control" type="text" name="party" required></td>
+                        <td><input class="form-control" value="0" type="number" name="votes" required></td>
+                    </tr>
+                    <tr>
+                        <td><input value="PDP" class="form-control" type="text" name="party" required></td>
+                        <td><input class="form-control" value="0" type="number" name="votes" required></td>
+                    </tr>
+                    <tr>
+                        <td><input value="PPA" class="form-control" type="text" name="party" required></td>
+                        <td><input class="form-control" value="0" type="number" name="votes" required></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row">
+
+                <button type="button" class="mx-1 col-auto btn btn-primary" id="addRow">Add Row</button><br><br>
+    
+                <button class="mx-1 col-auto btn btn-success" type="submit" value="Submit">Submit</button>
+            </div>
+            
+        </div>
+    </form>
+
+</div>
+{% endblock %}
