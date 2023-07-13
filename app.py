@@ -7,15 +7,21 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 from datetime import datetime
+from dotenv import load_dotenv
+import os
+
+
 
 # create the object of Flask
 app = Flask(__name__)
+load_dotenv()
 
 app.config['SECRET_KEY'] = 'BAmbooty291..'
 
+uri = os.getenv("DATABASE_URI")
 
 # SqlAlchemy Database Configuration With Mysql
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://sql8632439:g5ISZDB2Aw@sql8.freemysqlhosting.net/sql8632439'
+app.config['SQLALCHEMY_DATABASE_URI'] = uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
@@ -173,4 +179,5 @@ def get_lga_results(id):
 if __name__ == "__main__":
     with app.app_context():
         db.reflect()
+      
     app.run(debug=True)
